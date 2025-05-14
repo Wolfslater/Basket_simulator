@@ -1,4 +1,4 @@
-#Version 1.4.7 12/04/2025
+#Version 1.6.7 14/04/2025
 
 from random import uniform
 
@@ -12,6 +12,15 @@ class Cestino:
             for x in q:
                 self.add(x)
 
+    def rmvAll(self, fruit):
+        if fruit in self.cestino:
+            for i in self.cestino:
+                self.cestino.remove(i)
+
+    def rmvOne(self, fruit):
+        if fruit in self.cestino:
+            self.cestino.remove(fruit)
+        
     def clear(self):
         self.cestino.clear()
         
@@ -20,6 +29,12 @@ class Cestino:
     
     def getCapacity(self):
         return str(self.capacity)
+    
+    def getNames(self) -> str:
+        names = ""
+        for x in self.cestino:
+            names += f"{x.getName()}\n"
+        return names
     
     def getPrice(self):
         c = 0.0
