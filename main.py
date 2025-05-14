@@ -1,4 +1,4 @@
-# Version 1.11.5 12/05/2025
+# Version 2.11.5 14/05/2025
 
 from fruitManager import AddFruit, RemoveFruit
 from tkinter import Toplevel, Tk
