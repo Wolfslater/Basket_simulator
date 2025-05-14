@@ -21,7 +21,7 @@ class AddFruit:
         self.overlay.attributes("-alpha", 0.01)
 
         # Dropdown for basket selection
-        self.dropdown = DropDown(self.master, VALUES, self.dropdownHandler, self.overlay)
+        self.dropdown = DropDown(self.master, VALUES, self.dropdownHandler)
         self.dropdown.combobox.grid(row=0, column=0, padx=15)
 
         self.name_label = name(self.master, text="Fruit name here:")
@@ -123,6 +123,7 @@ class AddFruit:
                 return False
         return True
 
+
 class RemoveFruit:
     def __init__(self, master, relative):
         self.master = master
@@ -130,9 +131,13 @@ class RemoveFruit:
         self.relative = relative
         self.selected_basket = ""
 
-        # Fix: Create the basket_content Text widget 
+        # Initialize the overlay inside the RemoveFruit class
+        self.overlay = Frame(self.master, bg="lightgray")  # Added background color for visibility
+        grid(widget=self.overlay, row=1, column=0, sticky="nsew", columnspan=2)
+
+        # Text area for basket details
         self.basket_content = Text(self.master, bg="#f0f0f0")
-        
+
         self.backBtn = button(self.master, text="Back", command=self.back)
         self.rmvBtn = button(self.master, text="Remove the chosen fruit", command=self.remove)
         self.rmvAllBtn = button(self.master, text="Remove all chosen fruits", command=self.rmvAll)
@@ -148,7 +153,7 @@ class RemoveFruit:
 
         self.dropdown = DropDown(self.master, VALUES, self.dropdownHandler)
         self.dropdown.combobox.grid(row=0, column=2, padx=15)
-        
+
     def back(self):
         self.relative.deiconify()
         self.master.destroy()
@@ -164,14 +169,3 @@ class RemoveFruit:
         selectedItem = self.dropdown.getBasket()
         if selectedItem:
             self.selected_basket = selectedItem
-
-    def getBasketName(self) -> str:
-        # Retrieve the selected basket
-        return baskets.getBasket(self.selected_basket)
-    
-    def update_text_display(self, content):
-        # Update text area with provided content
-        self.basket_content.config(state="normal")
-        self.basket_content.delete("1.0", "end")
-        self.basket_content.insert(END, content)
-        self.basket_content.config(state="disabled")
