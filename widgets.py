@@ -1,4 +1,4 @@
-# Version 0.3.3 12/05/2025
+# Version 0.5.3 14/05/2025
 
 from tkinter import Label, Button, Entry, messagebox
 from tkinter.ttk import Combobox
@@ -24,7 +24,7 @@ class Factory:
 
     @staticmethod
     def newLabel(master, text=None, width=0) -> object:
-        return Label(master, text=text)  # Create a label
+        return Label(master, text=text, width=width)  # Create a label
     
     @staticmethod
     def newEntry(master, width=0) -> object:
@@ -52,6 +52,8 @@ class Warning:
                 return "ERROR: MISSING DATA OR WRONG DATA TYPE.\nPrice and weight must be numeric values."
             case "3":
                 return "Full basket.\nPlease select another basket!"
+            case "4":
+                return "No fruits named this way"
 
     def showWarning(self):
         messagebox.showwarning("WARNING", self.matchMessage())  # Show warning with matched message
@@ -66,6 +68,14 @@ class Baskets:
             "Basket 4": Cestino(),
             "Basket 5": Cestino()
         }
+
+    def rmvAll(self, basketName, fruitName=None):
+        if basketName in self.baskets:
+            baskets.rmvAll(fruitName)
+    
+    def rmvOne(self, basketName, fruitName=None):
+        if basketName in self.baskets:
+            baskets.rmvOne(fruitName)
 
     def getCapacity(self, basketName) -> float:
         # Get the capacity of a specific basket
@@ -90,6 +100,10 @@ class Baskets:
 
     def getBasketsName(self) -> list:
         return list(self.baskets.keys())  # Return list of basket names
+    
+    def getFruistName(self, basketName) -> str:
+        if basketName in self.baskets:
+            return self.baskets[basketName].getNames()
 
     def addFruit(self, basketName, fruit):
         # Add a fruit to a specific basket
