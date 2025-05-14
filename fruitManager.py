@@ -1,4 +1,4 @@
-# Version 4.9.7 14/05/2025
+# Version 3.9.7 12/05/2025
 
 from tkinter import Text, END
 from Frutto import Frutto
@@ -63,7 +63,7 @@ class AddFruit:
         
     def getFruitsSum(self) -> float:
         # Get total weight of fruits in basket
-        self.fruitSum = baskets.getFruitSum(self.selected_basket)
+        self.fruitSum = baskets.getNet(self.selected_basket)
         return self.fruitSum
         
     def insertFruit(self):
@@ -156,11 +156,28 @@ class RemoveFruit:
         self.master.destroy()
 
     def rmvOne(self):
-        if self.getBasketName():
-            baskets.rmvOne(self.selected_basket, self.getRemovingEntry())
+        try:
+            if self.getRemovingEntry() == "":
+                raise TypeError
+            if self.getBasketName():
+                fruit_name = self.getRemovingEntry()
+                if fruit_name:
+                    baskets.rmvOne(self.selected_basket, fruit_name)
+                    self.getFruitsName()  # Refresh the display
+        except (TypeError, KeyError):
+            Warning("4", self.getRemovingEntry()).showWarning()
 
     def rmvAll(self):
-        baskets.rmvAll(self.selected_basket, self.getRemovingEntry())
+        try:
+            if self.getRemovingEntry() == "":
+                raise TypeError
+            if self.getBasketName():
+                fruit_name = self.getRemovingEntry()
+                if fruit_name:
+                    baskets.rmvAll(self.selected_basket, fruit_name)
+                    self.getFruitsName()  # Refresh the display
+        except (TypeError, KeyError):
+            Warning("4", self.getRemovingEntry()).showWarning()
 
     def dropdownHandler(self, event=None):
         # Handle dropdown selection changes
@@ -182,8 +199,7 @@ class RemoveFruit:
     
     def getFruitsName(self):
         if self.getBasketName():
-            self.update_text_display(str(baskets.getFruistName(self.selected_basket)))
+            self.update_text_display(str(baskets.getFruitsName(self.selected_basket)))
 
     def getRemovingEntry(self) -> str:
-        print(self.removingEntry.get())
         return self.removingEntry.get()

@@ -1,4 +1,4 @@
-#Version 1.6.7 14/04/2025
+#Version 1.4.7 12/04/2025
 
 from random import uniform
 
@@ -7,18 +7,21 @@ class Cestino:
         # q èuna lista di frutti da mettere nel cestino, eventualmente vuoti
         self.cestino = set()
         self.capacity = round(uniform(150, 400), 2)
-        self.tare = round(uniform(1, 50), 2)
+        self.tare = round(uniform(15, 50), 2)
         if not q is None:
             for x in q:
                 self.add(x)
 
     def rmvAll(self, fruit):
-        if fruit in self.cestino:
-            for i in self.cestino:
-                self.cestino.remove(i)
+        to_remove = [item for item in self.cestino if fruit == item.getName()]
+        for item in to_remove:
+            self.cestino.remove(item)
 
     def rmvOne(self, fruit):
-        if fruit in self.cestino:
+            for item in self.cestino:
+                if item.getName() == fruit:
+                    fruit = item
+                    break
             self.cestino.remove(fruit)
         
     def clear(self):
@@ -56,12 +59,6 @@ class Cestino:
         
     def getTare(self):
         return str(self.tare)
-    
-    def sumFruit(self):
-        fruitSum = 0
-        for x in self.cestino:
-            fruitSum += x.getWeight()
-        return fruitSum
     
     def len(self):
         return len(self.cestino)

@@ -1,4 +1,4 @@
-# Version 2.11.5 14/05/2025
+# Version 1.11.5 12/05/2025
 
 from fruitManager import AddFruit, RemoveFruit
 from tkinter import Toplevel, Tk
@@ -52,7 +52,9 @@ class BasketInfos:
         exit()
 
     def clear(self):
-        if self.getBasketName():
+        if self.getBasketName() is None:
+            self.update_text_display("Basket's already empty")
+        elif self.getBasketName():
             baskets.clear(self.selected_basket)
 
     def update_text_display(self, content):
@@ -73,10 +75,10 @@ class BasketInfos:
             gross = self.getBasketName().getGrossWeight()
             tare = self.getBasketName().getTare()
             net = self.getBasketName().getNet()
-            weight = f"Basket's total capacity is {capacity}gr \
-                \nBasket's tare is {tare}gr \
-                \nBasket's net is {net}gr \
-                \nBasket's gross is {gross}gr"
+            weight = f"Basket's total capacity is: {capacity}gr \
+                \nBasket's tare is: {tare}gr \
+                \nBasket's net is: {net}gr \
+                \nBasket's gross is: {gross}gr"
             self.update_text_display(weight)
     
     def displayPrice(self):
@@ -102,7 +104,7 @@ class BasketInfos:
         AddFruit(self.newWindow, self.master)
 
     def rmvFruit(self):
-        self.master.withdraw
+        self.master.withdraw()
         self.newWindow = Toplevel(self.master)
         RemoveFruit(self.newWindow, self.master)
 

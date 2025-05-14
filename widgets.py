@@ -1,4 +1,4 @@
-# Version 0.5.3 14/05/2025
+# Version 0.3.3 12/05/2025
 
 from tkinter import Label, Button, Entry, messagebox
 from tkinter.ttk import Combobox
@@ -41,8 +41,9 @@ class Factory:
 
 # Warning class for displaying warning messages
 class Warning:
-    def __init__(self, message):
+    def __init__(self, message, fruit=None):
         self.message = message
+        self.fruit = fruit
 
     def matchMessage(self) -> str:
         match self.message:
@@ -53,7 +54,7 @@ class Warning:
             case "3":
                 return "Full basket.\nPlease select another basket!"
             case "4":
-                return "No fruits named this way"
+                return f"No fruits named: {self.fruit}"
 
     def showWarning(self):
         messagebox.showwarning("WARNING", self.matchMessage())  # Show warning with matched message
@@ -68,14 +69,14 @@ class Baskets:
             "Basket 4": Cestino(),
             "Basket 5": Cestino()
         }
-
+        
     def rmvAll(self, basketName, fruitName=None):
         if basketName in self.baskets:
-            baskets.rmvAll(fruitName)
+            self.baskets[basketName].rmvAll(fruitName)
     
     def rmvOne(self, basketName, fruitName=None):
         if basketName in self.baskets:
-            baskets.rmvOne(fruitName)
+            self.baskets[basketName].rmvOne(fruitName)
 
     def getCapacity(self, basketName) -> float:
         # Get the capacity of a specific basket
@@ -83,13 +84,10 @@ class Baskets:
             return self.baskets[basketName].getCapacity()
         else:
             return 0.0
-
-    def getFruitSum(self, basketName) -> float:
-        # Get the total weight/quantity of fruits in a basket
+        
+    def getNet(self, basketName):
         if basketName in self.baskets:
-            return self.baskets[basketName].sumFruit()
-        else:
-            return 0.0
+            return self.baskets[basketName].getNet()
 
     def getBasket(self, basketName) -> str:
         # Retrieve a basket object by name
@@ -101,7 +99,7 @@ class Baskets:
     def getBasketsName(self) -> list:
         return list(self.baskets.keys())  # Return list of basket names
     
-    def getFruistName(self, basketName) -> str:
+    def getFruitsName(self, basketName) -> str:
         if basketName in self.baskets:
             return self.baskets[basketName].getNames()
 
