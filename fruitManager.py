@@ -131,12 +131,8 @@ class RemoveFruit:
         self.relative = relative
         self.selected_basket = ""
 
-        # Initialize the overlay inside the RemoveFruit class
-        self.overlay = Frame(self.master, bg="lightgray")  # Added background color for visibility
-        grid(widget=self.overlay, row=1, column=0, sticky="nsew", columnspan=2)
-
         # Text area for basket details
-        self.basket_content = Text(self.master, bg="#f0f0f0")
+        self.text = Text(self.master, bg="#f0f0f0")
 
         self.backBtn = button(self.master, text="Back", command=self.back)
         self.rmvBtn = button(self.master, text="Remove the chosen fruit", command=self.remove)
@@ -147,7 +143,7 @@ class RemoveFruit:
         self.master.grid_columnconfigure(2, weight=1)
 
         grid(widget=self.backBtn, row=0, column=0, sticky="ew")
-        grid(widget=self.basket_content, row=1, column=0, sticky="nsew", columnspan=2)
+        grid(widget=self.text, row=1, column=0, sticky="nsew", columnspan=1)
         grid(widget=self.rmvBtn, row=2, column=0, sticky="ew")
         grid(widget=self.rmvAllBtn, row=2, column=1, sticky="ew")
 
