@@ -1,6 +1,6 @@
-# Version 3.9.7 12/05/2025
+# Version 4.9.7 14/05/2025
 
-from tkinter import Text, END, Frame
+from tkinter import Text, END
 from Frutto import Frutto
 from widgets import (Warning, DropDown, VALUES,
                     baskets, button, grid, entry, name)
@@ -15,10 +15,6 @@ class AddFruit:
         self.selected_basket = ""
         self.capacity = 0.0
         self.fruitSum = 0.0
-
-        self.overlay = Frame(self.master)
-        grid(widget=self.overlay, row=1, column=0, sticky="nsew", columnspan=2)
-        self.overlay.attributes("-alpha", 0.01)
 
         # Dropdown for basket selection
         self.dropdown = DropDown(self.master, VALUES, self.dropdownHandler)
@@ -132,10 +128,13 @@ class RemoveFruit:
         self.selected_basket = ""
 
         # Text area for basket details
-        self.text = Text(self.master, bg="#f0f0f0")
+        self.text = Text(self.master, bg="#f0f0f0", width=40, height=10)
+
+        self.removingName = name(self.master, text="Insert here the removing fruit's name:")
+        self.removingEntry = entry(self.master)
 
         self.backBtn = button(self.master, text="Back", command=self.back)
-        self.rmvBtn = button(self.master, text="Remove the chosen fruit", command=self.remove)
+        self.rmvBtn = button(self.master, text="Remove the chosen fruit", command=self.rmvOne)
         self.rmvAllBtn = button(self.master, text="Remove all chosen fruits", command=self.rmvAll)
 
         self.master.grid_columnconfigure(0, weight=1)
@@ -143,25 +142,48 @@ class RemoveFruit:
         self.master.grid_columnconfigure(2, weight=1)
 
         grid(widget=self.backBtn, row=0, column=0, sticky="ew")
-        grid(widget=self.text, row=1, column=0, sticky="nsew", columnspan=1)
+        grid(widget=self.text, row=1, column=0, sticky="nsew")
         grid(widget=self.rmvBtn, row=2, column=0, sticky="ew")
         grid(widget=self.rmvAllBtn, row=2, column=1, sticky="ew")
+        grid(widget=self.removingName, row=3, column=0, sticky="ew")
+        grid(widget=self.removingEntry, row=3, column=1, sticky="ew")
 
         self.dropdown = DropDown(self.master, VALUES, self.dropdownHandler)
-        self.dropdown.combobox.grid(row=0, column=2, padx=15)
+        self.dropdown.combobox.grid(row=0, column=1, padx=15)
 
     def back(self):
         self.relative.deiconify()
         self.master.destroy()
 
-    def remove(self):
-        pass
+    def rmvOne(self):
+        if self.getBasketName():
+            baskets.rmvOne(self.selected_basket, self.getRemovingEntry())
 
     def rmvAll(self):
-        pass
+        baskets.rmvAll(self.selected_basket, self.getRemovingEntry())
 
     def dropdownHandler(self, event=None):
         # Handle dropdown selection changes
         selectedItem = self.dropdown.getBasket()
         if selectedItem:
             self.selected_basket = selectedItem
+            self.getFruitsName()
+
+    def getBasketName(self) -> str:
+        # Get selected basket name
+        return baskets.getBasket(self.selected_basket)
+    
+    def update_text_display(self, content):
+        # Update text area with provided content
+        self.text.config(state="normal")
+        self.text.delete("1.0", "end")
+        self.text.insert(END, content)
+        self.text.config(state="disabled")
+    
+    def getFruitsName(self):
+        if self.getBasketName():
+            self.update_text_display(str(baskets.getFruistName(self.selected_basket)))
+
+    def getRemovingEntry(self) -> str:
+        print(self.removingEntry.get())
+        return self.removingEntry.get()
