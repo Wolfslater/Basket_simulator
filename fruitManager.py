@@ -157,7 +157,7 @@ class RemoveFruit:
 
     def rmvOne(self):
         try:
-            if self.getRemovingEntry() == "":
+            if self.getRemovingEntry() not in baskets.getFruitsName(self.selected_basket):
                 raise TypeError
             if self.getBasketName():
                 fruit_name = self.getRemovingEntry()
@@ -169,7 +169,7 @@ class RemoveFruit:
 
     def rmvAll(self):
         try:
-            if self.getRemovingEntry() == "":
+            if self.getRemovingEntry() not in baskets.getFruitsName(self.selected_basket):
                 raise TypeError
             if self.getBasketName():
                 fruit_name = self.getRemovingEntry()
