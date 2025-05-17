@@ -1,3 +1,5 @@
+#Version 1.2.7 27/04/2025
+
 from random import uniform
 
 class Cestino:
