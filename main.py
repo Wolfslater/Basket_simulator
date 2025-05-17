@@ -1,4 +1,4 @@
-# Version 1.11.5 12/05/2025
+# Version 2.11.6 17/05/2025
 
 from fruitManager import AddFruit, RemoveFruit
 from tkinter import Toplevel, Tk
@@ -6,17 +6,20 @@ from tkinter import Text, END
 from widgets import (DropDown, VALUES, baskets, grid, button)
 
 class BasketInfos:
+    """
+    Main class for basket management interface.
+    """
     def __init__(self, master):
-        # Initialize main window and variables
+        """
+        Initialize the main basket management window.
+        """
         self.master = master
-        # self.relative = relative
         self.master.title("Basket manager")
         self.selected_basket = ""
 
-        # Text area for basket details
         self.basket_content = Text(self.master, bg="#f0f0f0")
+        self.basket_content.config(state="disabled")  # Make read-only initially
 
-        # Buttons for various actions
         self.backBtn = button(self.master, text="exit", command=self.exit)
         self.addkBtn = button(self.master, text="Open fruit adder", command=self.addFruit)
         self.rmvBtn = button(self.master, text="open fruit remover", command=self.rmvFruit)
@@ -25,20 +28,12 @@ class BasketInfos:
         self.basketBtn = button(self.master, text="Display basket", command=self.displayBasket)
         self.pricetBtn = button(self.master, text="Display basket's price", command=self.displayPrice)
         
-        # Dropdown for basket selection
         self.dropdown = DropDown(master, VALUES, self.dropdownHandler, overlay=None)
         grid(widget=self.dropdown.combobox, row=0, column=7, sticky="ew")
 
-        # Arrange components in a grid layout
-        self.master.grid_columnconfigure(0, weight=1)  # Back button column 
-        self.master.grid_columnconfigure(1, weight=1)  # Weight infos column
-        self.master.grid_columnconfigure(2, weight=1)  # Basket display column
-        self.master.grid_columnconfigure(3, weight=1)  # Price column
-        self.master.grid_columnconfigure(4, weight=1)  # Clear column
-        self.master.grid_columnconfigure(5, weight=1)  # Clear column
-        self.master.grid_columnconfigure(6, weight=1)  # Dropdown column
+        for i in range(7):
+            self.master.grid_columnconfigure(i, weight=1)
 
-        # Place components in the grid
         grid(widget=self.basket_content, row=1, column=0, columnspan=7, sticky="nsew")
         grid(widget=self.backBtn, row=0, column=0, sticky="ew")
         grid(widget=self.addkBtn, row=0, column=1, sticky="ew")
@@ -49,69 +44,84 @@ class BasketInfos:
         grid(widget=self.clearBtn, row=0, column=6, sticky="ew")
 
     def exit(self):
+        """Exit the application."""
         exit()
 
     def clear(self):
-        if self.getBasketName() is None:
+        """Clear the selected basket."""
+        basket = self.getBasketName()
+        if basket is None:
             self.update_text_display("Basket's already empty")
-        elif self.getBasketName():
+        elif basket:
             baskets.clear(self.selected_basket)
+            self.update_text_display("Basket cleared successfully")
 
     def update_text_display(self, content):
-        # Update text area with provided content
+        """
+        Update the text area with new content.
+        """
         self.basket_content.config(state="normal")
         self.basket_content.delete("1.0", "end")
         self.basket_content.insert(END, content)
         self.basket_content.config(state="disabled")
     
-    def getBasketName(self) -> str:
-        # Retrieve the selected basket
+    def getBasketName(self):
+        """
+        Get the selected basket object.
+        """
         return baskets.getBasket(self.selected_basket)
     
     def displayBasketWeight(self):
-        # Display weight details of the selected basket
-        if self.getBasketName():
+        """Display weight details of the selected basket."""
+        basket = self.getBasketName()
+        if basket:
             capacity = baskets.getCapacity(self.selected_basket)
-            gross = self.getBasketName().getGrossWeight()
-            tare = self.getBasketName().getTare()
-            net = self.getBasketName().getNet()
-            weight = f"Basket's total capacity is: {capacity}gr \
-                \nBasket's tare is: {tare}gr \
-                \nBasket's net is: {net}gr \
-                \nBasket's gross is: {gross}gr"
-            self.update_text_display(weight)
+            gross = basket.getGrossWeight()
+            tare = basket.getTare()
+            net = basket.getNet()
+            weight_info = (
+                f"Basket's total capacity is: {capacity}gr\n"
+                f"Basket's tare is: {tare}gr\n"
+                f"Basket's net is: {net}gr\n"
+                f"Basket's gross is: {gross}gr"
+            )
+            self.update_text_display(weight_info)
     
     def displayPrice(self):
-        # Display price of the selected basket
-        if self.getBasketName(): 
-            self.price = self.getBasketName().getPrice()
+        """Display the total price of items in the selected basket."""
+        basket = self.getBasketName()
+        if basket: 
+            self.price = basket.getPrices()
             self.update_text_display(f"Basket's total price is: {self.price}€")
         
     def displayBasket(self):
-        # Display content of the selected basket
-        if self.getBasketName(): 
-            self.update_text_display(str(self.getBasketName()))
+        """Display all items in the selected basket."""
+        basket = self.getBasketName()
+        if basket: 
+            self.update_text_display(str(basket))
     
     def dropdownHandler(self, event=None):
-        # Handle dropdown selection changes
+        """
+        Handle basket selection from dropdown.
+        """
         selectedItem = self.dropdown.getBasket()
         if selectedItem:
             self.selected_basket = selectedItem
     
-    def addFruit(self):  # Open add fruit window
-        self.master.withdraw()
+    def addFruit(self):
+        """Open the add fruit window."""
+        self.master.withdraw()  # Hide main window
         self.newWindow = Toplevel(self.master)
         AddFruit(self.newWindow, self.master)
 
     def rmvFruit(self):
-        self.master.withdraw()
+        """Open the remove fruit window."""
+        self.master.withdraw()  # Hide main window
         self.newWindow = Toplevel(self.master)
         RemoveFruit(self.newWindow, self.master)
 
+
 if __name__ == '__main__':
-    # Create the main application window (root window).
     root = Tk()
-    # Instantiate the GUIManagement class, passing the root window as an argument.
     BasketInfos(root)
-    # Start the Tkinter event loop to keep the application running and responsive.
     root.mainloop()

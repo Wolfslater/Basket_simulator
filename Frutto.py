@@ -1,48 +1,64 @@
-#Version 1.0.1 21/04/2025
+#Version 1.0.2 17/05/2025
 
 import random
 
 class Frutto:
+    """
+    Class representing a fruit with name, price per kg, and weight in grams.
+    """
     def __init__(self, q=["", "", ""]):
-        # q è una lista [nom,pre,pes] oppure è None (in tal caso, frutto Random)
+        """
+        Initialize a fruit with optional parameters or random values.
+        """
         if q == ["", "", ""]:
-            x = random.randint(0,1)
-            if x==0:
-                self.name = "Ciliegia"
-                self.price_kg = round(random.uniform(5,9),2)
-                self.weight_gr = random.randint(2,25)
+            x = random.randint(0, 1)
+            if x == 0:
+                self.name = "ciliegia"  # Cherry
+                self.price_kg = round(random.uniform(5, 9), 2)
+                self.weight_gr = random.randint(2, 25)
             else:
-                self.name = "Pesca"
-                self.price_kg = round(random.uniform(2,7),2)
-                self.weight_gr = random.randint(15,60)
+                self.name = "pesca"  # Peach
+                self.price_kg = round(random.uniform(2, 7), 2)
+                self.weight_gr = random.randint(15, 60)
         else:
-            self.name = q[0]
+            self.name = q[0].lower()
             self.price_kg = float(q[1])
-            self.weight_gr = int(q[2])
+            self.weight_gr = float(q[2])
+            
+    def __str__(self) -> str:
+        """
+        String representation of the fruit.
+        """
+        return (f"{self.name} (weight {self.getWeight()}gr, "
+                f"price {self.getPrice()}€/kg, price {self.fruitPrice()}€)")
 
-    def __str__(self):
-        s = ""
-        s += self.name + " ("
-        s += "weight " + str(self.weight_gr) + "gr, "
-        s += "price " + str(self.price_kg) + "€/kg"
-        s += ", price " + str(self.price()) + "€)"
-        return s
-
-# I getter non prendono parametri formali #
-    def getName(self):
+    def getName(self) -> str:
+        """Get the name of the fruit."""
         return self.name
-    def getPrice(self):
+        
+    def getPrice(self) -> float:
+        """Get the price per kg of the fruit."""
         return self.price_kg
-    def getWeight(self):
+        
+    def getWeight(self) -> float:
+        """Get the weight in grams of the fruit."""
         return self.weight_gr
     
     def setName(self, x):
+        """Set the name of the fruit."""
         self.name = x
+        
     def setPrice(self, x):
+        """Set the price per kg of the fruit."""
         self.price_kg = x
+        
     def setWeight(self, x):
+        """Set the weight in grams of the fruit."""
         self.weight_gr = x
     
-    def price(self):
-        c  = (self.weight_gr / 1000) * self.price_kg
-        return round(c,2)
+    def fruitPrice(self) -> set:
+        """
+        Calculate the price of the fruit based on weight and price per kg.
+        """
+        price = (self.weight_gr / 1000) * self.price_kg
+        return str(round(price, 2))

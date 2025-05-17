@@ -1,71 +1,104 @@
-#Version 1.4.7 12/04/2025
-
 from random import uniform
 
 class Cestino:
-    def __init__(self,q=None):
-        # q èuna lista di frutti da mettere nel cestino, eventualmente vuoti
+    """
+    Class representing a basket that can hold fruits.
+    The basket has capacity, tare weight, and can contain multiple fruits.
+    """
+    def __init__(self, q=None):
+        """
+        Initialize a basket with optional initial fruits.
+        """
         self.cestino = set()
-        self.capacity = round(uniform(150, 400), 2)
-        self.tare = round(uniform(15, 50), 2)
-        if not q is None:
+        self.capacity = round(uniform(150, 400), 2)  # Random capacity between 150-400
+        self.tare = round(uniform(15, 50), 2)  # Random tare weight between 15-50
+        
+        if q is not None:
             for x in q:
                 self.add(x)
 
     def rmvAll(self, fruit):
+        """
+        Remove all fruits with the specified name from the basket.
+        """
         to_remove = [item for item in self.cestino if fruit == item.getName()]
         for item in to_remove:
             self.cestino.remove(item)
 
     def rmvOne(self, fruit):
-            for item in self.cestino:
-                if item.getName() == fruit:
-                    fruit = item
-                    break
-            self.cestino.remove(fruit)
+        """
+        Remove one fruit with the specified name from the basket.
+        """
+        for item in self.cestino:
+            if item.getName() == fruit:
+                self.cestino.remove(item)
+                break
         
     def clear(self):
+        """Remove all fruits from the basket."""
         self.cestino.clear()
         
     def add(self, f):
+        """
+        Add a fruit to the basket.
+        """
         self.cestino.add(f)
     
     def getCapacity(self):
-        return str(self.capacity)
+        """
+        Get the capacity of the basket.
+        """
+        return self.capacity
     
     def getNames(self) -> str:
+        """
+        Get the names of all fruits in the basket.
+        """
         names = ""
         for x in self.cestino:
             names += f"{x.getName()}\n"
         return names
     
-    def getPrice(self):
-        c = 0.0
-        for x in self.cestino:
-            c+=x.price()
-        return round(c,2)
+    def getPrices(self):
+        """
+        Get the total price of all fruits in the basket.
+        """
+        total = sum(float(x.fruitPrice()) for x in self.cestino)
+        return "{:0,.2f}".format(total).replace(".", ",")
     
     def getNet(self):
-        c = 0.0
-        for x in self.cestino:
-            c+=x.getWeight()
-        return c
+        """
+        Get the total net weight of all fruits in the basket.
+        """
+        return sum(x.getWeight() for x in self.cestino)
     
     def getGrossWeight(self):
-        grossWeight = self.getTare()
-        if self.getNet() != 0.0:
-            grossWeight = round(float(self.getTare()) + float(self.getNet()), 2)
-        return grossWeight
+        """
+        Get the gross weight (tare + net weight) of the basket.
+        """
+        if self.getNet() == 0.0:
+            return self.getTare()
+        return round(self.getTare() + self.getNet(), 2)
         
     def getTare(self):
-        return str(self.tare)
+        """
+        Get the tare weight of the basket.
+        """
+        return self.tare
     
     def len(self):
+        """
+        Get the number of fruits in the basket.
+        """
         return len(self.cestino)
     
     def __str__(self):
+        """
+        String representation of the basket.
+        """
         s = ""
         for x in self.cestino:
-          s += str(x)
-          s += "\n"
+            s += ("Name:" + x.getName() + ", price: {}kg/€, fruit's price: {}€"
+                 .format(x.getPrice(), x.fruitPrice()).replace(".", ","))
+            s += "\n"
         return s
