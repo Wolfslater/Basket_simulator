@@ -1,4 +1,4 @@
-# Version 3.10.7 12/05/2025
+# Version 3.10.7 17/05/2025
 
 from tkinter import Text, END
 from Frutto import Frutto
@@ -79,12 +79,20 @@ class AddFruit:
         grid(widget=self.back_btn, row=5, column=0, padx=40, pady=5)
         grid(widget=self.clear_btn, row=5, column=1, padx=5, pady=5)
     
+    # ----- Event handlers -----
+    
+    def dropdownHandler(self, event=None):
+        """Handle basket selection from dropdown."""
+        selectedItem = self.dropdown.getBasket()
+        if selectedItem:
+            self.selected_basket = selectedItem
+
     def onFocusIn(self, event):
         """Clear placeholder text when entry gains focus"""
         for i in [self.name_entry, self.price_entry, self.weight_entry]:
             if i.get() == self.placeholderMessage:
                 i.delete(0, END)
-                i.configure(fg=self.color)
+                i.configure(fg="black")
 
     def onFocusOut(self, event):
         """Restore placeholder text when entry loses focus and is empty"""
@@ -92,22 +100,9 @@ class AddFruit:
             if not i.get():
                 i.insert(0, self.placeholderMessage)
                 i.configure(fg=self.color)
-
-    def back(self):
-        """Return to the previous window."""
-        self.relative.deiconify()
-        self.master.destroy()
-        
-    def getBasketCapacity(self) -> float:
-        """Get the capacity of the selected basket."""
-        self.capacity = float(baskets.getCapacity(self.selected_basket))
-        return self.capacity
-        
-    def getFruitsSum(self) -> float:
-        """Get the total weight of fruits in the selected basket."""
-        self.fruitSum = baskets.getNet(self.selected_basket)
-        return self.fruitSum
-        
+    
+    # ----- Button actions -----
+    
     def insertFruit(self):
         """Add a fruit to the selected basket if possible."""
         try:
@@ -124,30 +119,50 @@ class AddFruit:
                 self.addToBasket()
         except ValueError:
             Warning("2").showWarning()  # Invalid input values
-
-    def dropdownHandler(self, event=None):
-        """Handle basket selection from dropdown."""
-        selectedItem = self.dropdown.getBasket()
-        if selectedItem:
-            self.selected_basket = selectedItem
-
-    def addToBasket(self):
-        """Add the current fruit to the selected basket."""
-        baskets.addFruit(self.selected_basket, self.fruit)
     
+    def back(self):
+        """Return to the previous window."""
+        self.relative.deiconify()
+        self.master.destroy()
+
     def clearInfos(self):
         """Clear all input fields."""
         for field in [self.name_entry, self.price_entry, self.weight_entry]:
             field.delete(0, END)
-
+    
+    # ----- Basket operations -----
+    
+    def addToBasket(self):
+        """Add the current fruit to the selected basket."""
+        baskets.addFruit(self.selected_basket, self.fruit)
+    
     def getBasketName(self) -> str:
         """Get the name of the selected basket."""
         return baskets.getBasket(self.selected_basket)
     
+    def getBasketCapacity(self) -> float:
+        """Get the capacity of the selected basket."""
+        self.capacity = float(baskets.getCapacity(self.selected_basket))
+        return self.capacity
+    
+    def getFruitsSum(self) -> float:
+        """Get the total weight of fruits in the selected basket."""
+        self.fruitSum = baskets.getNet(self.selected_basket)
+        return self.fruitSum
+    
     def getSum(self) -> float:
         """Calculate total weight after adding the new fruit."""
         return self.getFruitsSum() + self.fruit.getWeight()
-
+    
+    def isFull(self) -> bool:
+        """Check if the basket can accommodate more fruits."""
+        if float(baskets.getCapacity(self.selected_basket)) > 0.0:
+            if self.getSum() <= self.getBasketCapacity():
+                return False
+        return True
+    
+    # ----- Fruit operations -----
+    
     def getFruit(self) -> list:
         """Get fruit details from input fields, filtering out placeholder text."""
         name = self.name_entry.get().lower()
@@ -157,13 +172,6 @@ class AddFruit:
         if self.placeholderMessage in fruit:
             return ["", "", ""]  # Return empty values if placeholder is present
         return fruit
-    
-    def isFull(self) -> bool:
-        """Check if the basket can accommodate more fruits."""
-        if float(baskets.getCapacity(self.selected_basket)) > 0.0:
-            if self.getSum() <= self.getBasketCapacity():
-                return False
-        return True
 
 
 class RemoveFruit:
@@ -204,7 +212,18 @@ class RemoveFruit:
         # Create dropdown for basket selection
         self.dropdown = DropDown(self.master, VALUES, self.dropdownHandler)
         self.dropdown.combobox.grid(row=0, column=1, padx=15)
-
+    
+    # ----- Event handlers -----
+    
+    def dropdownHandler(self, event=None):
+        """Handle basket selection from dropdown."""
+        selectedItem = self.dropdown.getBasket()
+        if selectedItem:
+            self.selected_basket = selectedItem
+            self.getFruitsName()  # Update display with fruits in selected basket
+    
+    # ----- Button actions -----
+    
     def back(self):
         """Return to the previous window."""
         self.relative.deiconify()
@@ -237,17 +256,20 @@ class RemoveFruit:
                     self.getFruitsName()  # Refresh the display
         except (TypeError, KeyError):
             Warning("4", self.getRemovingEntry()).showWarning()  # Fruit not found warning
-
-    def dropdownHandler(self, event=None):
-        """Handle basket selection from dropdown."""
-        selectedItem = self.dropdown.getBasket()
-        if selectedItem:
-            self.selected_basket = selectedItem
-            self.getFruitsName()  # Update display with fruits in selected basket
-
+    
+    # ----- Basket operations -----
+    
     def getBasketName(self) -> str:
         """Get the name of the selected basket."""
         return baskets.getBasket(self.selected_basket)
+    
+    def getFruitsName(self):
+        """Display names of fruits in the selected basket."""
+        if self.getBasketName():
+            fruits_names = baskets.getFruitsName(self.selected_basket)
+            self.update_text_display(str(fruits_names))
+    
+    # ----- Display operations -----
     
     def update_text_display(self, content):
         """Update the text area with new content."""
@@ -256,12 +278,8 @@ class RemoveFruit:
         self.text.insert(END, content)
         self.text.config(state="disabled")
     
-    def getFruitsName(self):
-        """Display names of fruits in the selected basket."""
-        if self.getBasketName():
-            fruits_names = baskets.getFruitsName(self.selected_basket)
-            self.update_text_display(str(fruits_names))
-
+    # ----- Input operations -----
+    
     def getRemovingEntry(self) -> str:
         """Get the name of the fruit to remove from the entry field."""
         return self.removingEntry.get().lower()

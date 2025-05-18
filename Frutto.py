@@ -1,4 +1,4 @@
-#Version 1.0.2 17/05/2025
+#Version 1.0.3 17/05/2025
 
 import random
 
@@ -24,37 +24,43 @@ class Frutto:
             self.name = q[0].lower()
             self.price_kg = float(q[1])
             self.weight_gr = float(q[2])
-            
+    
     def __str__(self) -> str:
         """
         String representation of the fruit.
         """
         return (f"{self.name} (weight {self.getWeight()}gr, "
                 f"price {self.getPrice()}€/kg, price {self.fruitPrice()}€)")
-
+    
+    # ----- Getter methods -----
+    
     def getName(self) -> str:
         """Get the name of the fruit."""
         return self.name
-        
+    
     def getPrice(self) -> float:
         """Get the price per kg of the fruit."""
         return self.price_kg
-        
+    
     def getWeight(self) -> float:
         """Get the weight in grams of the fruit."""
         return self.weight_gr
     
+    # ----- Setter methods -----
+    
     def setName(self, x):
         """Set the name of the fruit."""
         self.name = x
-        
+    
     def setPrice(self, x):
         """Set the price per kg of the fruit."""
         self.price_kg = x
-        
+    
     def setWeight(self, x):
         """Set the weight in grams of the fruit."""
         self.weight_gr = x
+    
+    # ----- Calculation methods -----
     
     def fruitPrice(self) -> set:
         """

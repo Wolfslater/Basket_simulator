@@ -1,4 +1,4 @@
-# Version 2.11.6 17/05/2025
+# Version 2.11.7 18/05/2025
 
 from fruitManager import AddFruit, RemoveFruit
 from tkinter import Toplevel, Tk
@@ -43,19 +43,21 @@ class BasketInfos:
         grid(widget=self.pricetBtn, row=0, column=5, sticky="ew")
         grid(widget=self.clearBtn, row=0, column=6, sticky="ew")
 
-    def exit(self):
-        """Exit the application."""
-        exit()
-
-    def clear(self):
-        """Clear the selected basket."""
-        basket = self.getBasketName()
-        if basket is None:
-            self.update_text_display("Basket's already empty")
-        elif basket:
-            baskets.clear(self.selected_basket)
-            self.update_text_display("Basket cleared successfully")
-
+    # Core selection and helper methods
+    def getBasketName(self):
+        """
+        Get the selected basket object.
+        """
+        return baskets.getBasket(self.selected_basket)
+    
+    def dropdownHandler(self, event=None):
+        """
+        Handle basket selection from dropdown.
+        """
+        selectedItem = self.dropdown.getBasket()
+        if selectedItem:
+            self.selected_basket = selectedItem
+    
     def update_text_display(self, content):
         """
         Update the text area with new content.
@@ -65,11 +67,12 @@ class BasketInfos:
         self.basket_content.insert(END, content)
         self.basket_content.config(state="disabled")
     
-    def getBasketName(self):
-        """
-        Get the selected basket object.
-        """
-        return baskets.getBasket(self.selected_basket)
+    # Display methods - grouped together
+    def displayBasket(self):
+        """Display all items in the selected basket."""
+        basket = self.getBasketName()
+        if basket: 
+            self.update_text_display(str(basket))
     
     def displayBasketWeight(self):
         """Display weight details of the selected basket."""
@@ -80,11 +83,12 @@ class BasketInfos:
             tare = basket.getTare()
             net = basket.getNet()
             weight_info = (
-                f"Basket's total capacity is: {capacity}gr\n"
-                f"Basket's tare is: {tare}gr\n"
-                f"Basket's net is: {net}gr\n"
-                f"Basket's gross is: {gross}gr"
-            )
+                "Basket's total capacity is: {:0,.2f}gr \
+                \nBasket's tare is: {:0,.2f}gr \
+                \nBasket's net is: {:0,.2f}gr \
+                \nBasket's gross is: {:0,.2f}gr"
+                .format(capacity, gross, tare, net).replace(".", ","))
+
             self.update_text_display(weight_info)
     
     def displayPrice(self):
@@ -93,21 +97,8 @@ class BasketInfos:
         if basket: 
             self.price = basket.getPrices()
             self.update_text_display(f"Basket's total price is: {self.price}€")
-        
-    def displayBasket(self):
-        """Display all items in the selected basket."""
-        basket = self.getBasketName()
-        if basket: 
-            self.update_text_display(str(basket))
     
-    def dropdownHandler(self, event=None):
-        """
-        Handle basket selection from dropdown.
-        """
-        selectedItem = self.dropdown.getBasket()
-        if selectedItem:
-            self.selected_basket = selectedItem
-    
+    # Modification methods - grouped together    
     def addFruit(self):
         """Open the add fruit window."""
         self.master.withdraw()  # Hide main window
@@ -119,6 +110,20 @@ class BasketInfos:
         self.master.withdraw()  # Hide main window
         self.newWindow = Toplevel(self.master)
         RemoveFruit(self.newWindow, self.master)
+    
+    def clear(self):
+        """Clear the selected basket."""
+        basket = self.getBasketName()
+        if basket is None:
+            self.update_text_display("Basket's already empty")
+        elif basket:
+            baskets.clear(self.selected_basket)
+            self.update_text_display("Basket cleared successfully")
+    
+    # Control method - placed last as it's an exit operation
+    def exit(self):
+        """Exit the application."""
+        exit()
 
 
 if __name__ == '__main__':
