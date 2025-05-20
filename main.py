@@ -87,7 +87,7 @@ class BasketInfos:
                 \nBasket's tare is: {:0,.2f}gr \
                 \nBasket's net is: {:0,.2f}gr \
                 \nBasket's gross is: {:0,.2f}gr"
-                .format(capacity, gross, tare, net).replace(".", ","))
+                .format(capacity, tare, net, gross).replace(".", ","))
 
             self.update_text_display(weight_info)
     
