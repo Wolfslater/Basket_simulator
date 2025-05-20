@@ -10,6 +10,9 @@ class BasketInfos:
     Main class for basket management interface.
     """
     def __init__(self, master):
+        """
+        Initialize the main basket management window.
+        """
         self.master = master
         self.master.title("Basket manager")
         self.selected_basket = ""
@@ -48,7 +51,9 @@ class BasketInfos:
         return baskets.getBasket(self.selected_basket)
     
     def dropdownHandler(self, event=None):
-        """Handle basket selection from dropdown."""
+        """
+        Handle basket selection from dropdown.
+        """
         selectedItem = self.dropdown.getBasket()
         if selectedItem:
             self.selected_basket = selectedItem
@@ -70,6 +75,7 @@ class BasketInfos:
             self.update_text_display(str(basket))
     
     def displayBasketWeight(self):
+        """Display weight details of the selected basket."""
         basket = self.getBasketName()
         if basket:
             capacity = baskets.getCapacity(self.selected_basket)
@@ -86,6 +92,7 @@ class BasketInfos:
             self.update_text_display(weight_info)
     
     def displayPrice(self):
+        """Display the total price of items in the selected basket."""
         basket = self.getBasketName()
         if basket: 
             self.price = basket.getPrices()
