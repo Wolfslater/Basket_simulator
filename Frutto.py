@@ -7,9 +7,6 @@ class Frutto:
     Class representing a fruit with name, price per kg, and weight in grams.
     """
     def __init__(self, q=["", "", ""]):
-        """
-        Initialize a fruit with optional parameters or random values.
-        """
         if q == ["", "", ""]:
             x = random.randint(0, 1)
             if x == 0:
@@ -26,45 +23,33 @@ class Frutto:
             self.weight_gr = float(q[2])
     
     def __str__(self) -> str:
-        """
-        String representation of the fruit.
-        """
         return (f"{self.name} (weight {self.getWeight()}gr, "
                 f"price {self.getPrice()}€/kg, price {self.fruitPrice()}€)")
     
     # ----- Getter methods -----
     
     def getName(self) -> str:
-        """Get the name of the fruit."""
         return self.name
     
     def getPrice(self) -> float:
-        """Get the price per kg of the fruit."""
         return self.price_kg
     
     def getWeight(self) -> float:
-        """Get the weight in grams of the fruit."""
         return self.weight_gr
     
     # ----- Setter methods -----
     
-    def setName(self, x):
-        """Set the name of the fruit."""
+    def setName(self, x) -> str:
         self.name = x
     
-    def setPrice(self, x):
-        """Set the price per kg of the fruit."""
+    def setPrice(self, x) -> float:
         self.price_kg = x
     
-    def setWeight(self, x):
-        """Set the weight in grams of the fruit."""
+    def setWeight(self, x) -> float:
         self.weight_gr = x
     
     # ----- Calculation methods -----
     
-    def fruitPrice(self) -> set:
-        """
-        Calculate the price of the fruit based on weight and price per kg.
-        """
+    def fruitPrice(self) -> str:
         price = (self.weight_gr / 1000) * self.price_kg
         return str(round(price, 2))
