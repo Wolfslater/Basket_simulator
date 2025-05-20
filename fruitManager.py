@@ -10,6 +10,9 @@ class AddFruit:
     Class for adding fruits to baskets through a GUI interface.
     """
     def __init__(self, master, relative):
+        """
+        Initialize the fruit addition window.
+        """
         self.master = master
         self.master.title("Fruit manager")
         self.relative = relative
@@ -130,16 +133,20 @@ class AddFruit:
     # ----- Basket operations -----
     
     def addToBasket(self):
+        """Add the current fruit to the selected basket."""
         baskets.addFruit(self.selected_basket, self.fruit)
     
     def getBasketName(self) -> str:
+        """Get the name of the selected basket."""
         return baskets.getBasket(self.selected_basket)
     
     def getBasketCapacity(self) -> float:
+        """Get the capacity of the selected basket."""
         self.capacity = float(baskets.getCapacity(self.selected_basket))
         return self.capacity
     
     def getFruitsSum(self) -> float:
+        """Get the total weight of fruits in the selected basket."""
         self.fruitSum = baskets.getNet(self.selected_basket)
         return self.fruitSum
     
@@ -157,6 +164,7 @@ class AddFruit:
     # ----- Fruit operations -----
     
     def getFruit(self) -> list:
+        """Get fruit details from input fields, filtering out placeholder text."""
         name = self.name_entry.get().lower()
         price = self.price_entry.get()
         weight = self.weight_entry.get()
@@ -167,7 +175,9 @@ class AddFruit:
 
 
 class RemoveFruit:
+    """Class for removing fruits from baskets through a GUI interface."""
     def __init__(self, master, relative):
+        """Initialize the fruit removal window."""
         self.master = master
         self.master.title("Fruit manager")
         self.relative = relative
@@ -215,11 +225,12 @@ class RemoveFruit:
     # ----- Button actions -----
     
     def back(self):
+        """Return to the previous window."""
         self.relative.deiconify()
         self.master.destroy()
 
     def rmvOne(self):
-        """Remove one instance of the specified fruit."""
+        """Remove one instance of the specified fruit from the basket."""
         try:
             fruit_name = self.getRemovingEntry()
             if fruit_name not in baskets.getFruitsName(self.selected_basket):
@@ -233,7 +244,7 @@ class RemoveFruit:
             Warning("4", self.getRemovingEntry()).showWarning()  # Fruit not found warning
 
     def rmvAll(self):
-        """Remove all instances of the specified fruit."""
+        """Remove all instances of the specified fruit from the basket."""
         try:
             fruit_name = self.getRemovingEntry()
             if fruit_name not in baskets.getFruitsName(self.selected_basket):
@@ -249,9 +260,11 @@ class RemoveFruit:
     # ----- Basket operations -----
     
     def getBasketName(self) -> str:
+        """Get the name of the selected basket."""
         return baskets.getBasket(self.selected_basket)
     
     def getFruitsName(self):
+        """Display names of fruits in the selected basket."""
         if self.getBasketName():
             fruits_names = baskets.getFruitsName(self.selected_basket)
             self.update_text_display(str(fruits_names))
