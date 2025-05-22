@@ -42,10 +42,8 @@ class Cestino:
         """
         Remove one fruit with the specified name from the basket.
         """
-        for item in self.cestino:
-            if item.getName() == fruit:
-                self.cestino.remove(item)
-                break
+        if fruit in self.cestino:
+            self.cestino.remove(fuit)
     
     def rmvAll(self, fruit):
         """
